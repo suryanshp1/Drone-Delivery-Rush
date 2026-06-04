@@ -29,16 +29,6 @@ func (s *TitleScene) Update() error {
 func (s *TitleScene) Draw(screen *ebiten.Image) {
 	screen.Fill(color.RGBA{20, 20, 40, 255}) // Dark neo-tokyo purple/blue
 	
-	titleText := "DRONE DELIVERY RUSH\n\nPress ENTER to Start"
-	controlsText := `HOW TO PLAY:
-- W/A/S/D: Move Drone
-- SHIFT: Boost (Uses more battery!)
-
-Pick up YELLOW packages.
-Drop them at GREEN delivery zones.
-Avoid Buildings and Antennas!
-Heavier packages change your flight physics.`
-
-	ebitenutil.DebugPrintAt(screen, titleText, 10, 10)
-	ebitenutil.DebugPrintAt(screen, controlsText, 10, 80)
+	msg := "DRONE DELIVERY RUSH\n\nPress ENTER to Start\n\n\nHOW TO PLAY:\n[W] Thrust Up\n[A] Fly Left (Forward)\n[D] Fly Right (Brake)\n[SHIFT] Boost\n\nDeliver packages to recharge your battery!"
+	ebitenutil.DebugPrintAt(screen, msg, s.game.screenWidth/2-100, s.game.screenHeight/2-50)
 }

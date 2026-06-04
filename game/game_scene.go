@@ -107,6 +107,12 @@ func (s *GameScene) Update() error {
 					if s.drone.CurrentPackage != nil {
 						s.score += s.drone.CurrentPackage.Value
 						s.drone.CurrentPackage = nil
+						
+						// Recharge battery on successful delivery
+						s.drone.Battery += 30.0
+						if s.drone.Battery > s.drone.MaxBattery {
+							s.drone.Battery = s.drone.MaxBattery
+						}
 					}
 				}
 			}
@@ -195,6 +201,11 @@ func (s *GameScene) Draw(screen *ebiten.Image) {
 	// Draw Obstacles
 	for _, obs := range s.obstacles {
 		obs.Draw(screen, s.cameraX, s.cameraY)
+	}
+
+	// Draw Tutorial in Chunk 0
+	if s.drone.X > 0 && s.drone.X < 1000 {
+		ebitenutil.DebugPrintAt(screen, "HOW TO PLAY:\n[W] Thrust Up\n[A] Fly Left (Forward)\n[D] Fly Right (Brake)\n[SHIFT] Boost (Drains Battery Fast)\n\nDeliver packages to recharge battery!", int(900-s.cameraX-100), int(390-s.cameraY-150))
 	}
 
 	// Draw Drone
