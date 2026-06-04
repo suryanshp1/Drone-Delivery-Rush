@@ -1,6 +1,7 @@
 package game
 
 import (
+	"drone-delivery-rush/systems"
 	"github.com/hajimehoshi/ebiten/v2"
 )
 
@@ -9,13 +10,16 @@ type Game struct {
 	screenHeight int
 	currentScene Scene
 	nextScene    Scene
+	Save         systems.SaveData
 }
 
 func NewGame(width, height int) *Game {
 	g := &Game{
 		screenWidth:  width,
 		screenHeight: height,
+		Save:         systems.LoadSave(),
 	}
+	// Set initial scene
 	g.SwitchScene(NewTitleScene(g))
 	return g
 }

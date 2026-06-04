@@ -36,6 +36,14 @@ func NewGameScene(g *Game) *GameScene {
 func (s *GameScene) Init() {
 	// Start drone on ground at the right side of chunk 0
 	s.drone = entities.NewDrone(900.0, 390.0)
+	
+	// Apply Upgrades
+	s.drone.BatteryLevel = s.game.Save.Upgrades["battery"]
+	s.drone.MotorLevel = s.game.Save.Upgrades["motor"]
+	s.drone.MaxBattery = 100.0 + float64(s.drone.BatteryLevel)*50.0
+	s.drone.Battery = s.drone.MaxBattery
+	s.drone.ThrustPower = 0.6 + float64(s.drone.MotorLevel)*0.1
+
 	s.cameraX = 0
 	s.cameraY = 0
 	
@@ -51,9 +59,22 @@ func (s *GameScene) Init() {
 func (s *GameScene) Update() error {
 	if s.gameOver {
 		if ebiten.IsKeyPressed(ebiten.KeyEnter) {
+			// Save score before restarting
+			s.game.Save.Coins += s.score
+			if s.score > s.game.Save.BestScore {
+				s.game.Save.BestScore = s.score
+			}
+			systems.SaveGame(s.game.Save)
+
 			s.game.SwitchScene(NewGameScene(s.game)) // Restart
 		}
 		if ebiten.IsKeyPressed(ebiten.KeyEscape) {
+			s.game.Save.Coins += s.score
+			if s.score > s.game.Save.BestScore {
+				s.game.Save.BestScore = s.score
+			}
+			systems.SaveGame(s.game.Save)
+
 			s.game.SwitchScene(NewTitleScene(s.game))
 		}
 		return nil
@@ -131,6 +152,16 @@ func (s *GameScene) Update() error {
 			s.drone.VY = 0
 		}
 	}
+
+	// Spatial Culling (Memory Leak Fix)
+	// Remove obstacles that are safely behind the drone (to the right)
+	activeObstacles := s.obstacles[:0]
+	for _, obs := range s.obstacles {
+		if obs.X < s.drone.X+1500 {
+			activeObstacles = append(activeObstacles, obs)
+		}
+	}
+	s.obstacles = activeObstacles
 
 	// Right Fence (Prevent flying backwards to the right infinitely)
 	if s.drone.X > 950 {
