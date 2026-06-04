@@ -4,7 +4,7 @@
 
 **Drone Delivery Rush** is a fast-paced 2D arcade game built with Go and Ebitengine. You control a futuristic delivery drone navigating through a dense, procedurally generated cyberpunk city. Your mission is to pick up heavy packages from rooftop landing pads and deliver them safely to drop-off zones while battling gravity, wind, and your own drone's battery limit.
 
-![Drone Delivery Rush](assets/drone.png)
+![Drone Delivery Rush](assets/gameplay.png)
 
 ## Features 🌟
 
